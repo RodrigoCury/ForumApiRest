@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +35,7 @@ public class TopicosController {
   }
 
   @GetMapping
-  public List<TopicoDto> getTopicos(@RequestParam(required = false) String nomeDoCurso){
+  public List<TopicoDto> getTopicos(@RequestParam(required = false) String nomeDoCurso) {
     List<Topico> topicos = null;
 
     if (nomeDoCurso == null)
@@ -44,8 +46,18 @@ public class TopicosController {
     return TopicoDto.convertToDTO(topicos);
   }
 
+  @GetMapping("/{id}")
+  public ResponseEntity<TopicoDto> getTopicoById(@PathVariable("id") Long id) {
+    Optional<Topico> topico = topicoRepository.findById(id);
+
+    if (topico.isEmpty())
+      return ResponseEntity.notFound().build();
+
+    return ResponseEntity.ok(new TopicoDto(topico.get()));
+  }
+
   @PostMapping
-  public ResponseEntity createTopico(@Valid @RequestBody TopicoDto requestTopico){
+  public ResponseEntity<TopicoDto> createTopico(@Valid @RequestBody TopicoDto requestTopico, UriComponentsBuilder builder) {
     Optional<Usuario> usuario = usuarioRepository.findById(requestTopico.getUserId());
     Optional<Curso> curso = cursoRepository.findById(requestTopico.getCursoId());
 
@@ -53,16 +65,16 @@ public class TopicosController {
 
     if (error) {
       return ResponseEntity
-          .status(HttpStatus.NOT_FOUND)
-          .body("Usuario ou curso não encontrado");
+          .badRequest().build();
     }
 
     Topico topico = requestTopico.toTopico(usuario.get(), curso.get());
     topicoRepository.save(topico);
 
+
+    URI uri = builder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
     return ResponseEntity
-        .status(HttpStatus.CREATED)
-        .body(topico);
+        .created(uri).body(new TopicoDto(topico));
 
   }
 }
