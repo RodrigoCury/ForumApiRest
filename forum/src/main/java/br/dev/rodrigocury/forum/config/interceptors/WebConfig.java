@@ -1,4 +1,4 @@
-package br.dev.rodrigocury.forum;
+package br.dev.rodrigocury.forum.config.interceptors;
 
 import br.dev.rodrigocury.forum.interceptors.AcessoInterceptor;
 import org.springframework.context.annotation.Configuration;
