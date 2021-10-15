@@ -5,6 +5,9 @@ import br.dev.rodrigocury.forum.models.Topico;
 import br.dev.rodrigocury.forum.models.Usuario;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class TopicoDto {
 
@@ -18,6 +21,13 @@ public class TopicoDto {
   private Long cursoId;
 
   public TopicoDto() {
+  }
+
+  public TopicoDto(Topico topico){
+    this.titulo = topico.getTitulo();
+    this.mensagem = topico.getMensagem();
+    this.userId = topico.getAutor().getId();
+    this.cursoId = topico.getCurso().getId();
   }
 
   public String getTitulo() {
@@ -56,4 +66,8 @@ public class TopicoDto {
     return new Topico(titulo, mensagem, curso, usuario);
   }
 
+  public static List<TopicoDto> convertToDTO(List<Topico> topicos){
+    if (topicos == null) return new ArrayList<>();
+    return topicos.stream().map(TopicoDto::new).toList();
+  }
 }
