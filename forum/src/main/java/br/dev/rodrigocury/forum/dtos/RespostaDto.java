@@ -18,6 +18,12 @@ public class RespostaDto {
   public RespostaDto() {
   }
 
+  public RespostaDto(Resposta resposta) {
+    this.mensagem = resposta.getMensagem();
+    this.topicoId = resposta.getTopico().getId();
+    this.usuarioid = resposta.getAutor().getId();
+  }
+
   public Long getTopicoId() {
     return topicoId;
   }

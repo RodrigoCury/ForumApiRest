@@ -1,6 +1,7 @@
 package br.dev.rodrigocury.forum.controller;
 
 import br.dev.rodrigocury.forum.Utils.CheckOptionals;
+import br.dev.rodrigocury.forum.dtos.DetalhesTopicoDTO;
 import br.dev.rodrigocury.forum.dtos.TopicoDto;
 import br.dev.rodrigocury.forum.models.Curso;
 import br.dev.rodrigocury.forum.models.Topico;
@@ -47,13 +48,13 @@ public class TopicosController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<TopicoDto> getTopicoById(@PathVariable("id") Long id) {
-    Optional<Topico> topico = topicoRepository.findById(id);
+  public ResponseEntity<DetalhesTopicoDTO> getTopicoById(@PathVariable("id") Long id) {
+    Optional<Topico> topico = topicoRepository.findAllById(id);
 
     if (topico.isEmpty())
       return ResponseEntity.notFound().build();
 
-    return ResponseEntity.ok(new TopicoDto(topico.get()));
+    return ResponseEntity.ok(new DetalhesTopicoDTO(topico.get()));
   }
 
   @PostMapping
