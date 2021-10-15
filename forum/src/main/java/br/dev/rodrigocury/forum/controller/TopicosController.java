@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/topicos")
+@RequestMapping("api/topicos")
 public class TopicosController {
 
   private final TopicoRepository topicoRepository;
@@ -33,8 +33,15 @@ public class TopicosController {
   }
 
   @GetMapping
-  public List<Topico> getTopicos(){
-    return null;
+  public List<TopicoDto> getTopicos(@RequestParam(required = false) String nomeDoCurso){
+    List<Topico> topicos = null;
+
+    if (nomeDoCurso == null)
+      topicos = (List<Topico>) topicoRepository.findAll();
+    else
+      topicos = topicoRepository.findAllByNomeDoCurso(nomeDoCurso);
+
+    return TopicoDto.convertToDTO(topicos);
   }
 
   @PostMapping
