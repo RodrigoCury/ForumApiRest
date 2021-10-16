@@ -12,6 +12,8 @@ import br.dev.rodrigocury.forum.repositories.TopicoRepository;
 import br.dev.rodrigocury.forum.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +45,7 @@ public class TopicosController {
   }
 
   @GetMapping
+  @Cacheable(value = "topicos")
   public Page<TopicoDto> getTopicos(
       @RequestParam(required = false) String nomeDoCurso,
       @PageableDefault(sort = "dataCriacao", direction = Sort.Direction.DESC, page = 0, size = 10) Pageable paginacao
@@ -69,6 +72,7 @@ public class TopicosController {
   }
 
   @PostMapping
+  @CacheEvict(value = "topicos")
   public ResponseEntity<TopicoDto> createTopico(@Valid @RequestBody TopicoDto requestTopico, UriComponentsBuilder builder) {
     Optional<Usuario> usuario = usuarioRepository.findById(requestTopico.getUserId());
     Optional<Curso> curso = cursoRepository.findById(requestTopico.getCursoId());
@@ -87,12 +91,14 @@ public class TopicosController {
 
   @PutMapping("/{id}")
   @Transactional
+  @CacheEvict(value = "topicos")
   public ResponseEntity<TopicoDto> atualizaTopico(@Valid @RequestBody AtualizacaoTopicoForm topicoForm, @PathVariable("id") Long id){
     Topico topico = topicoForm.atualizar(id, topicoRepository);
     return ResponseEntity.accepted().body(new TopicoDto(topico));
   }
 
   @DeleteMapping("/{id}")
+  @CacheEvict(value = "topicos")
   public ResponseEntity<TopicoDto> removeTopico(@PathVariable("id") Long id){
       topicoRepository.deleteById(id);
       return ResponseEntity.ok().build();

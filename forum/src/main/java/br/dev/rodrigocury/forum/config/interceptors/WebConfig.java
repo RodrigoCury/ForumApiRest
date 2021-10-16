@@ -1,6 +1,7 @@
 package br.dev.rodrigocury.forum.config.interceptors;
 
 import br.dev.rodrigocury.forum.interceptors.AcessoInterceptor;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Configuration
 @EnableSpringDataWebSupport
+@EnableCaching
 public class WebConfig extends WebMvcConfigurationSupport {
 
   @Override
