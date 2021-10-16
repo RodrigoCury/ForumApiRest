@@ -3,6 +3,7 @@ package br.dev.rodrigocury.forum.dtos;
 import br.dev.rodrigocury.forum.models.Topico;
 import br.dev.rodrigocury.forum.repositories.TopicoRepository;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -36,7 +37,7 @@ public class AtualizacaoTopicoForm {
   public Topico atualizar(Long id, TopicoRepository topicoRepository) {
     Optional<Topico> topico = topicoRepository.findById(id);
     if (topico.isEmpty()){
-      return null;
+      throw new EmptyResultDataAccessException(404);
     }
     topico.get().setMensagem(mensagem);
     topico.get().setTitulo(titulo);

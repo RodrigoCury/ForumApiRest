@@ -35,17 +35,12 @@ public class RespostaController {
   }
 
   @PostMapping
-  public ResponseEntity criaResposta(@Valid @RequestBody RespostaDto requestResposta){
+  public ResponseEntity<Resposta> criaResposta(@Valid @RequestBody RespostaDto requestResposta){
     Optional<Usuario> usuario = usuarioRepository.findById(requestResposta.getUsuarioid());
     Optional<Topico> topico = topicoRepository.findById(requestResposta.getTopicoId());
 
-    Boolean error = CheckOptionals.anyOptionalsEmpty(usuario, topico);
+    CheckOptionals.anyOptionalsEmpty(usuario, topico);
 
-    if (error) {
-      return ResponseEntity
-          .status(HttpStatus.NOT_FOUND)
-          .body("Tópico ou Usuário não encontrado");
-    }
 
     Resposta resposta = requestResposta.toResposta(topico.get(), usuario.get());
     respostaRepository.save(resposta);

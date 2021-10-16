@@ -11,6 +11,7 @@ import br.dev.rodrigocury.forum.repositories.CursoRepository;
 import br.dev.rodrigocury.forum.repositories.TopicoRepository;
 import br.dev.rodrigocury.forum.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -51,9 +52,9 @@ public class TopicosController {
   @GetMapping("/{id}")
   public ResponseEntity<DetalhesTopicoDTO> getTopicoById(@PathVariable("id") Long id) {
     Optional<Topico> topico = topicoRepository.findById(id);
-    
+
     if (topico.isEmpty())
-      return ResponseEntity.notFound().build();
+      throw new EmptyResultDataAccessException(404);
 
     return ResponseEntity.ok(new DetalhesTopicoDTO(topico.get()));
   }
@@ -63,12 +64,7 @@ public class TopicosController {
     Optional<Usuario> usuario = usuarioRepository.findById(requestTopico.getUserId());
     Optional<Curso> curso = cursoRepository.findById(requestTopico.getCursoId());
 
-    boolean error = CheckOptionals.anyOptionalsEmpty(usuario, curso);
-
-    if (error) {
-      return ResponseEntity
-          .badRequest().build();
-    }
+    CheckOptionals.anyOptionalsEmpty(usuario, curso);
 
     Topico topico = requestTopico.toTopico(usuario.get(), curso.get());
     topicoRepository.save(topico);
@@ -84,9 +80,13 @@ public class TopicosController {
   @Transactional
   public ResponseEntity<TopicoDto> atualizaTopico(@Valid @RequestBody AtualizacaoTopicoForm topicoForm, @PathVariable("id") Long id){
     Topico topico = topicoForm.atualizar(id, topicoRepository);
-    if (topico == null){
-      return ResponseEntity.notFound().build();
-    }
     return ResponseEntity.accepted().body(new TopicoDto(topico));
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<TopicoDto> removeTopico(@PathVariable("id") Long id){
+      topicoRepository.deleteById(id);
+      return ResponseEntity.ok().build();
+  }
+
 }
