@@ -1,6 +1,7 @@
 package br.dev.rodrigocury.forum.controller;
 
 import br.dev.rodrigocury.forum.Utils.CheckOptionals;
+import br.dev.rodrigocury.forum.dtos.AtualizacaoTopicoForm;
 import br.dev.rodrigocury.forum.dtos.DetalhesTopicoDTO;
 import br.dev.rodrigocury.forum.dtos.TopicoDto;
 import br.dev.rodrigocury.forum.models.Curso;
@@ -10,8 +11,8 @@ import br.dev.rodrigocury.forum.repositories.CursoRepository;
 import br.dev.rodrigocury.forum.repositories.TopicoRepository;
 import br.dev.rodrigocury.forum.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -49,8 +50,8 @@ public class TopicosController {
 
   @GetMapping("/{id}")
   public ResponseEntity<DetalhesTopicoDTO> getTopicoById(@PathVariable("id") Long id) {
-    Optional<Topico> topico = topicoRepository.findAllById(id);
-
+    Optional<Topico> topico = topicoRepository.findById(id);
+    
     if (topico.isEmpty())
       return ResponseEntity.notFound().build();
 
@@ -77,5 +78,15 @@ public class TopicosController {
     return ResponseEntity
         .created(uri).body(new TopicoDto(topico));
 
+  }
+
+  @PutMapping("/{id}")
+  @Transactional
+  public ResponseEntity<TopicoDto> atualizaTopico(@Valid @RequestBody AtualizacaoTopicoForm topicoForm, @PathVariable("id") Long id){
+    Topico topico = topicoForm.atualizar(id, topicoRepository);
+    if (topico == null){
+      return ResponseEntity.notFound().build();
+    }
+    return ResponseEntity.accepted().body(new TopicoDto(topico));
   }
 }
