@@ -3,6 +3,7 @@ package br.dev.rodrigocury.forum.dtos;
 import br.dev.rodrigocury.forum.models.Curso;
 import br.dev.rodrigocury.forum.models.Topico;
 import br.dev.rodrigocury.forum.models.Usuario;
+import org.springframework.data.domain.Page;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -76,8 +77,7 @@ public class TopicoDto {
     return new Topico(titulo, mensagem, curso, usuario);
   }
 
-  public static List<TopicoDto> convertToDTO(List<Topico> topicos){
-    if (topicos == null) return new ArrayList<>();
-    return topicos.stream().map(TopicoDto::new).toList();
+  public static Page<TopicoDto> convertToDTO(Page<Topico> topicos){
+    return topicos.map(TopicoDto::new);
   }
 }
