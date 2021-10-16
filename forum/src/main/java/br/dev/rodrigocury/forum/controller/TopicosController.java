@@ -11,10 +11,12 @@ import br.dev.rodrigocury.forum.repositories.CursoRepository;
 import br.dev.rodrigocury.forum.repositories.TopicoRepository;
 import br.dev.rodrigocury.forum.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -43,11 +45,8 @@ public class TopicosController {
   @GetMapping
   public Page<TopicoDto> getTopicos(
       @RequestParam(required = false) String nomeDoCurso,
-      @RequestParam() int pagina,
-      @RequestParam() int qtd
-  ) {
-
-    Pageable paginacao = PageRequest.of(pagina, qtd);
+      @PageableDefault(sort = "dataCriacao", direction = Sort.Direction.DESC, page = 0, size = 10) Pageable paginacao
+      ) {
 
     Page<Topico> topicos = null;
 
