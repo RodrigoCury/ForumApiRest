@@ -1,5 +1,6 @@
 package br.dev.rodrigocury.forum.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -13,7 +14,7 @@ public class Resposta {
   private String mensagem;
 
   @ManyToOne
-  @JsonIgnore
+  @JsonBackReference
   private Topico topico;
 
   private LocalDateTime dataCriacao = LocalDateTime.now();

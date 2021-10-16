@@ -2,6 +2,7 @@ package br.dev.rodrigocury.forum.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -28,7 +29,7 @@ public class Topico {
   private Curso curso;
 
   @OneToMany(mappedBy = "topico", fetch = FetchType.LAZY)
-  @JsonIgnore
+  @JsonManagedReference
   private List<Resposta> respostas = new ArrayList<>();
 
   public Topico(String titulo, String mensagem, Curso curso, Usuario usuario) {
