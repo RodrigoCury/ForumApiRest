@@ -13,7 +13,8 @@ public interface TopicoRepository extends CrudRepository<Topico, Long> {
   @Query("select t from Topico t join t.curso curso where curso.nome = :nomeDoCurso")
   List<Topico> findAllByNomeDoCurso(@Param("nomeDoCurso") String nomeDoCurso);
 
-  @Query("select t from Topico t join fetch t.respostas where t.id = :id")
-  Optional<Topico> findAllById(@Param("id") Long id);
+  @Override
+  @Query("select t from Topico t left join fetch t.respostas where t.id = :id")
+  Optional<Topico> findById(@Param("id") Long id);
 
 }
