@@ -19,6 +19,7 @@ public class TopicoDto {
   private Long userId;
   @NotNull
   private Long cursoId;
+  private Long id;
 
   public TopicoDto() {
   }
@@ -28,6 +29,15 @@ public class TopicoDto {
     this.mensagem = topico.getMensagem();
     this.userId = topico.getAutor().getId();
     this.cursoId = topico.getCurso().getId();
+    this.id = topico.getId();
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getTitulo() {
