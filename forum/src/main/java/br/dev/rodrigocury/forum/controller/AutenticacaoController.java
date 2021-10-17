@@ -20,8 +20,8 @@ import javax.validation.Valid;
 @RequestMapping("auth")
 public class AutenticacaoController {
 
-  private AuthenticationManager authenticationManager;
-  private TokenService tokenService;
+  private final AuthenticationManager authenticationManager;
+  private final TokenService tokenService;
 
   @Autowired
   public AutenticacaoController(AuthenticationManager authenticationManager, TokenService tokenService) {
