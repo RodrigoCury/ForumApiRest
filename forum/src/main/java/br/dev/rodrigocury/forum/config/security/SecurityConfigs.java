@@ -1,5 +1,6 @@
 package br.dev.rodrigocury.forum.config.security;
 
+import br.dev.rodrigocury.forum.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,16 +13,21 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
 public class SecurityConfigs extends WebSecurityConfigurerAdapter {
 
-  AutenticacaoService autenticacaoService;
+  private final AutenticacaoService autenticacaoService;
+  private final TokenService tokenService;
+  private final UsuarioRepository usuarioRepository;
 
   @Autowired
-  public void setAutenticacaoService(AutenticacaoService autenticacaoService) {
+  public SecurityConfigs(AutenticacaoService autenticacaoService, TokenService tokenService, UsuarioRepository usuarioRepository) {
     this.autenticacaoService = autenticacaoService;
+    this.tokenService = tokenService;
+    this.usuarioRepository = usuarioRepository;
   }
 
   @Bean
@@ -44,6 +50,7 @@ public class SecurityConfigs extends WebSecurityConfigurerAdapter {
         .anyRequest().authenticated()
         .and().csrf().disable()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and().addFilterBefore(new AutenticacaoTokenFilter(tokenService, usuarioRepository), UsernamePasswordAuthenticationFilter.class)
         ;
   }
 
