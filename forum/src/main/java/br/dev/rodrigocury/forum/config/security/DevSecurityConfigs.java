@@ -18,15 +18,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @EnableWebSecurity
 @Configuration
-@Profile("prod")
-public class SecurityConfigs extends WebSecurityConfigurerAdapter {
+@Profile("dev")
+public class DevSecurityConfigs extends WebSecurityConfigurerAdapter {
 
   private final AutenticacaoService autenticacaoService;
   private final TokenService tokenService;
   private final UsuarioRepository usuarioRepository;
 
   @Autowired
-  public SecurityConfigs(AutenticacaoService autenticacaoService, TokenService tokenService, UsuarioRepository usuarioRepository) {
+  public DevSecurityConfigs(AutenticacaoService autenticacaoService, TokenService tokenService, UsuarioRepository usuarioRepository) {
     this.autenticacaoService = autenticacaoService;
     this.tokenService = tokenService;
     this.usuarioRepository = usuarioRepository;
@@ -46,12 +46,6 @@ public class SecurityConfigs extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
-        .antMatchers(HttpMethod.GET, "/api/topicos").permitAll()
-        .antMatchers(HttpMethod.GET, "/api/topicos/*").permitAll()
-        .antMatchers(HttpMethod.GET, "/actuator").permitAll()
-        .antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
-        .antMatchers(HttpMethod.POST, "/auth").permitAll()
-        .antMatchers(HttpMethod.DELETE, "/topicos/*").hasRole("MODERADOR")
         .anyRequest().authenticated()
         .and().csrf().disable()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

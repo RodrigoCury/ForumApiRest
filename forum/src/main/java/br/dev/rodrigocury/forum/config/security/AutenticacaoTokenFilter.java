@@ -2,6 +2,7 @@ package br.dev.rodrigocury.forum.config.security;
 
 import br.dev.rodrigocury.forum.models.Usuario;
 import br.dev.rodrigocury.forum.repositories.UsuarioRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Profile("prod")
 public class AutenticacaoTokenFilter extends OncePerRequestFilter {
 
   private final TokenService tokenService;
